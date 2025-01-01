@@ -1,0 +1,48 @@
+{% extends "home.html" %}
+{% load static %}
+{% block content %}
+
+<header style="text-align: center; padding: 20px; background-color: #333; color: white;">
+  <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Workspace solutions</h1>
+  <p style="font-size: 1.2rem; margin-bottom: 20px;">
+    Get the privacy and personalization you expect from your own space, with the flexibility you deserve.
+    Find a solution for all the ways you and your team work.
+  </p>
+</header>
+
+<section class="workspace-solutions" style="display: flex; flex-direction: row; align-items: center; margin: 50px 50px;">
+  <div class="private-workspace" style="text-align: center; margin: 30px;">
+    <img src="{% static 'images/images.png' %}" alt="Private Workspace Icon" style="width: 120px; height: 120px; object-fit: cover; margin-bottom: 20px;">
+    <h2 style="font-size: 2rem; margin-bottom: 10px;">Private workspace</h2>
+    <p style="font-size: 1rem;">Furnished offices for individuals and teams</p>
+  </div>
+  <div class="workspace-cards" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+    <div class="card" style="background-color: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); text-align: center; padding: 20px; width: 250px; transition: transform 0.3s;">
+      <img src="{% static 'images/Image3.jpg' %}" alt="Dedicated Desk Icon" style="width: 250px; height: 150px; object-fit: cover; margin-bottom: 20px;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Dedicated Desk</h3>
+      <p style="font-size: 1rem;">Your own desk in a shared office</p>
+    </div>
+    <div class="card" style="background-color: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); text-align: center; padding: 20px; width: 250px; transition: transform 0.3s;">
+      <img src="{% static 'images/Image1.jpg' %}" alt="Private Office Icon" style="width: 250px; height: 150px; object-fit: cover; margin-bottom: 20px;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Private Office</h3>
+      <p style="font-size: 1rem;">Move-in ready office with shared or private amenities</p>
+    </div>
+    <div class="card" style="background-color: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); text-align: center; padding: 20px; width: 250px; transition: transform 0.3s;">
+      <img src="{% static 'images/Image6.jpg' %}" alt="Full Floor Office Icon" style="width: 250px; height: 150px; object-fit: cover; margin-bottom: 20px;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Full Floor Office</h3>
+      <p style="font-size: 1rem;">Furnished, customizable office on a private floor</p>
+    </div>
+  </div>
+</section>
+
+<section class="coworking-access" style="display: flex; flex-direction: row; align-items: center; margin: 50px 50px;">
+  <div class="coworking-info" style="text-align: center;">
+    <img src="{% static 'images/cowork.png' %}" alt="Coworking Access Icon" style="width: 100px; height: 100px; object-fit: cover; margin-bottom: 20px;">
+    <h2 style="font-size: 2rem; margin-bottom: 10px;">Coworking access</h2>
+    <p style="font-size: 1rem;">Shared workspace you access by the day or month</p>
+    
+  </div>
+ 
+</section>
+
+{% endblock content %}

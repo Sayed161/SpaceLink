@@ -1,0 +1,95 @@
+{% extends "home.html" %}
+{% block content %}
+<div class="form-container">
+    <h2>Create a Company</h2>
+    <form method="POST" class="company-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="submit-btn">Request for role</button>
+    </form>
+</div>
+
+<style>
+    /* Form Container */
+    .form-container {
+        width: 80%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #f4f4f4;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 2rem;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    /* Form Elements */
+    .company-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .company-form p {
+        font-size: 1rem;
+        color: #555;
+        margin: 5px 0;
+    }
+
+    .company-form input, 
+    .company-form select, 
+    .company-form textarea {
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: border 0.3s ease-in-out;
+    }
+
+    .company-form input:focus,
+    .company-form select:focus,
+    .company-form textarea:focus {
+        border-color: #0066cc;
+        outline: none;
+    }
+
+    /* Button Styles */
+    .submit-btn {
+        padding: 12px;
+        font-size: 1.2rem;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: #005bb5;
+    }
+
+    /* Textarea Styling */
+    .company-form textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    /* Responsive Styling */
+    @media (max-width: 600px) {
+        .form-container {
+            width: 90%;
+        }
+
+        .submit-btn {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock content %}
+   

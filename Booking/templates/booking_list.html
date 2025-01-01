@@ -1,0 +1,194 @@
+{% extends "home.html" %}
+{% block content %}
+<header>
+    <nav>
+      <ul class="navbar" style="display: flex; justify-content: center; align-items: center; background-color: transparent; list-style: none; margin: 0; padding: 10px 20px;">
+        <li style="margin: 0 15px;">
+          <a href="{% url 'index' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Home</a>
+        </li>
+        <li style="margin: 0 15px; position: relative;">
+          <a href="#" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Book space</a>
+          
+          <ul class="dropdown" style="position: absolute; top: 100%; left: 0; background-color: white; border: 1px solid #ccc; display: none; list-style: none; padding: 0; margin: 0; min-width: 180px;">
+            <li><a href="{% url 'desk' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Desk</a></li>
+            <li><a href="{% url 'office' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book an Office</a></li>
+            <li><a href="{% url 'room' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Room</a></li>
+          </ul>
+        </li>
+        <li style="margin: 0 15px;">
+          <a href="{% url 'list' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Your bookings</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+<h1>Your Bookings</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2rem;
+        color: #444;
+        margin: 20px 0;
+    }
+
+    /* Booking List Container */
+    .list ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px auto;
+    }
+
+    .list li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center; /* Vertically aligns content */
+        gap: 20px; /* Space between image and details */
+    }
+
+    li:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        border-color: #aaa;
+    }
+
+    /* Booking Image */
+  .list  li img {
+        flex-shrink: 0; /* Prevents shrinking */
+        width: 150px; /* Fixed width for images */
+        height: 100px; /* Fixed height for consistency */
+        border-radius: 5px;
+        object-fit: cover; /* Ensures image doesn't stretch */
+    }
+
+    /* Booking Details */
+    .list li .details {
+        flex: 1; /* Allows details to take remaining space */
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .list li .details span {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .list li .details span.type {
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+    .list  li .details span.date {
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    /* Button Styles */
+    .list li .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .list li .actions a {
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        color: #fff;
+        background-color: #007BFF;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .list li .actions a:hover {
+        background-color: #0056b3;
+    }
+
+    .list li .actions a.cancel {
+        background-color: #dc3545;
+    }
+
+    .list li .actions a.cancel:hover {
+        background-color: #a71d2a;
+    }
+</style>
+
+<ul class="list">
+    {% for booking in bookings %}
+        <li>
+            {% if booking.room and booking.room.Room.image %}
+                <img src="{{ booking.room.Room.image.url }}" alt="Room Image">
+            {% elif booking.office and booking.office.image %}
+                <img src="{{ booking.office.image.url }}" alt="Office Image">
+            {% elif booking.Desk and booking.Desk.image %}
+                <img src="{{ booking.Desk.image.url }}" alt="Desk Image">
+            {% endif %}
+            <div class="details">
+                {% if booking.room %}
+                    <span class="type">Room Booking</span>
+                    <span>Room Name: {{ booking.room.Room.room_name }}</span>
+                    <span>Company: {{ booking.room.Room.company }}</span>
+                    <span>Slot: {{ booking.room.start_time }} - {{ booking.room.end_time }}</span>
+                    <span>Price: {{ booking.room.price }}</span>
+                    <span class="date">Date: {{ booking.booking_date }}</span>
+                    <span>Status: {{ booking.status }}</span>
+                {% elif booking.office %}
+                    <span class="type">Office Booking</span>
+                    <span>Office: {{ booking.office.office_name }}</span>
+                    <span>Company: {{ booking.office.company }}</span>
+                    <span class="date">Date: {{ booking.booking_date }}</span>
+                    <span>Status: {{ booking.status }}</span>
+                {% elif booking.Desk %}
+                    <span class="type">Desk Booking</span>
+                    <span>Time: {{ booking.Desk.time }}</span>
+                    <span>Company: {{ booking.Desk.company }}</span>
+                    <span>Price: {{ booking.Desk.cost }}</span>
+                    <span class="date">Date: {{ booking.booking_date }}</span>
+                    <span>Status: {{ booking.status }}</span>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+{% block script %}
+<script>
+  // Get the 'Book space' list item and its dropdown
+  const bookSpaceItem = document.querySelector('.navbar li:nth-child(2)');
+  const dropdown = bookSpaceItem.querySelector('.dropdown');
+
+  // Show the dropdown when hovering over the 'Book space' list item
+  bookSpaceItem.addEventListener('mouseover', () => {
+    dropdown.style.display = 'block'; // Display the dropdown
+  });
+
+  // Hide the dropdown when the mouse leaves the 'Book space' list item
+  bookSpaceItem.addEventListener('mouseout', () => {
+    dropdown.style.display = 'none'; // Hide the dropdown
+  });
+
+  // Prevent hiding the dropdown if mouse is over the dropdown itself
+  dropdown.addEventListener('mouseover', () => {
+    dropdown.style.display = 'block'; // Keep dropdown open when hovering over it
+  });
+
+  // Hide the dropdown when the mouse leaves the dropdown
+  dropdown.addEventListener('mouseout', () => {
+    dropdown.style.display = 'none'; // Hide dropdown if mouse leaves it
+  });
+</script>
+
+{% endblock script %}

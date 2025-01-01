@@ -1,0 +1,367 @@
+
+{% extends "home.html" %}
+
+{% block style %}
+  
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock style %}
+
+
+{% block content %}
+<header>
+  <nav>
+    <ul class="navbar" style="display: flex; justify-content: center; align-items: center; background-color: transparent; list-style: none; margin: 0; padding: 10px 20px;">
+      <li style="margin: 0 15px;">
+        <a href="{% url 'index' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Home</a>
+      </li>
+      <li style="margin: 0 15px; position: relative;">
+        <a href="#" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Book space</a>
+        
+        <ul class="dropdown" style="position: absolute; top: 100%; left: 0; background-color: white; border: 1px solid #ccc; display: none; list-style: none; padding: 0; margin: 0; min-width: 180px;">
+          <li><a href="{% url 'desk' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Desk</a></li>
+          <li><a href="{% url 'office' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book an Office</a></li>
+          <li><a href="{% url 'room' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Room</a></li>
+        </ul>
+      </li>
+      <li style="margin: 0 15px;">
+        <a href="{% url 'list' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Your bookings</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<section class="booking-section">
+  <style>
+
+    .booking-section {
+      padding: 20px;
+    }
+
+
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    .list ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px auto;
+    }
+
+    .list li {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 90%;
+    }
+
+    li:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border-color: #aaa;
+    }
+
+    .list li img {
+      flex-shrink: 0;
+      width: 280px;
+      height: 180px;
+      border-radius: 5px;
+      object-fit: cover;
+    }
+
+    .list li .details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .list li .details span {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .list li .details span.type {
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    .list li .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .list li .actions a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #007BFF;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .list li .actions a:hover {
+      background-color: #0056b3;
+    }
+    .book-button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .book-button:hover {
+      background-color: #0056b3;
+    }
+
+  /* Empty state when no offices are available */
+  .office-container p {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #999;
+  }
+
+  .modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  position: relative;
+  width: 300px;
+}
+
+.close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  cursor: pointer; /* Add cursor style to make it look like a button */
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .slot-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+.slots {
+  display: flex; /* Arrange children in a row */
+  flex-wrap: wrap; /* Allow wrapping to the next row if space runs out */
+  gap: 5px; /* Add space between slot items */
+  margin-top: 0px;
+}
+
+.slot {
+  padding: 10px;
+  margin: 5px;
+  height: 20px;
+  align-self: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.slot.available:hover {
+  background-color: #e0ffe0;
+}
+
+.slot.booked {
+  background-color: #ffcccc;
+  cursor: not-allowed;
+}
+
+.slot.selected {
+  background-color: #008000;
+  color: white;
+}
+
+.slot:hover:not(.booked) {
+  background-color: #40c057;
+}
+
+#booking-form {
+  margin: 20px 45px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 400px;
+}
+
+#booking-form .form-group {
+  margin-bottom: 15px;
+}
+
+#booking-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+#booking-form input[type="date"],
+#booking-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+#booking-form button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+#booking-form button:hover {
+  background-color: #0056b3;
+}
+  </style>
+
+  <h1>Book a Room</h1>
+  <p>Book a room for the day to use in the common area of any SpaceLink location.</p>
+  <form id="booking-form">
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input type="date" id="date" value="2024-12-10">
+    </div>
+    <div class="form-group">
+      <label for="city">City</label>
+      <select id="city" name="city">
+        {% for location in locations %}
+          <option value="{{ location.name }}" {% if location.name == location %}selected{% endif %}>{{ location.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+  <div class="list-container">
+    <ul class="list">
+      {% for office in rooms %}
+      <li>
+        <img src="{{ office.image.url }}" alt="Office Image">
+        <div class="details">
+          <span class="type">Office Booking</span>
+          <span>Location: {{ office.company.Location }}</span>
+          <span>Company: {{ office.company.name }}</span>
+          <span>Time: {{ office.room_name }}</span>
+          <span>Capacity: {{ office.capacity }}</span>
+        </div>
+        <div class="slots">
+          {% for slot in office.slots %}
+            <div class="slot {% if slot.is_booked %}booked{% else %}available{% endif %}"
+                 title="{% if slot.is_booked %}Booked{% else %}Available{% endif %}"
+                 data-slot-id="{{ slot.pk }}"
+                 data-start="{{ slot.start_time }}"
+                 data-end="{{ slot.end_time }}"
+                 data-price="{{ slot.price }}">
+              {{ slot.start_time }} - {{ slot.end_time }}
+            </div>
+          {% endfor %}
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+
+  {% endblock %}
+{% block script %}
+  <script>
+    // Get the 'Book space' list item and its dropdown
+    const bookSpaceItem = document.querySelector('.navbar li:nth-child(2)');
+    const dropdown = bookSpaceItem.querySelector('.dropdown');
+  
+    // Show the dropdown when hovering over the 'Book space' list item
+    bookSpaceItem.addEventListener('mouseover', () => {
+      dropdown.style.display = 'block'; // Display the dropdown
+    });
+  
+    // Hide the dropdown when the mouse leaves the 'Book space' list item
+    bookSpaceItem.addEventListener('mouseout', () => {
+      dropdown.style.display = 'none'; // Hide the dropdown
+    });
+  
+    // Prevent hiding the dropdown if mouse is over the dropdown itself
+    dropdown.addEventListener('mouseover', () => {
+      dropdown.style.display = 'block'; // Keep dropdown open when hovering over it
+    });
+    const slots = document.querySelectorAll('.slot');
+
+// Handle slot selection
+slots.forEach(slot => {
+  slot.addEventListener('click', () => {
+    // Deselect any previously selected slot
+    const selectedSlot = document.querySelector('.slot.selected');
+    if (selectedSlot) {
+      selectedSlot.classList.remove('selected');
+    }
+
+    // Select the clicked slot
+    slot.classList.add('selected');
+    
+    // Update the form with selected slot details
+    const slotInfo = `${slot.dataset.start} - ${slot.dataset.end} ($${slot.dataset.price})`;
+    document.getElementById('slot').value = slotInfo;
+  });
+}); 
+{% endblock script %}
+  

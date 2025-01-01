@@ -1,0 +1,95 @@
+{% extends "home.html" %}
+{% load static %}
+
+{% block title %}SPACELINK{% endblock %}
+
+{% block content %}
+<header>
+  <nav>
+    <ul class="navbar" style="display: flex; justify-content: center; align-items: center; background-color: transparent; list-style: none; margin: 0; padding: 10px 20px;">
+      <li style="margin: 0 15px;">
+        <a href="{% url 'index' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Home</a>
+      </li>
+      <li style="margin: 0 15px; position: relative;">
+        <a href="#" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Book space</a>
+        
+        <ul class="dropdown" style="position: absolute; top: 100%; left: 0; background-color: white; border: 1px solid #ccc; display: none; list-style: none; padding: 0; margin: 0; min-width: 180px;">
+          <li><a href="{% url 'desk' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Desk</a></li>
+          <li><a href="{% url 'office' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book an Office</a></li>
+          <li><a href="{% url 'room' %}"  style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Room</a></li>
+        </ul>
+      </li>
+      <li style="margin: 0 15px;">
+        <a href="{% url 'list' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Your bookings</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="space-options">
+    <div class="space-card">
+      <img src="{% static 'images/image1.jpg' %}" alt="Book a desk">
+      <div class="space-info">
+        <h3>Book a desk</h3>
+        <p>Book a desk in the common space</p>
+        <a href="{% url 'desk' %}">
+          <button class="book-now">Book now</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="space-card">
+      <img src="{% static 'images/image2.jpg' %}" alt="Book a room">
+      <div class="space-info">
+        <h3>Book a room</h3>
+        <p>Book meeting rooms by the hour</p>
+        <a href="{% url 'room' %}">
+          <button class="book-now">Book now</button>
+        </a>
+      </div>
+    </div>
+
+    <div class="space-card">
+      <img src="{% static 'images/image3.jpg' %}" alt="Book an office">
+      <div class="space-info">
+        <h3>Book an office</h3>
+        <p>Book an office by the day</p>
+        <a href="{% url 'office' %}">
+          <button class="book-now">Book now</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+{% endblock %}
+{% block script %}
+<script>
+  // Get the 'Book space' list item and its dropdown
+  const bookSpaceItem = document.querySelector('.navbar li:nth-child(2)');
+  const dropdown = bookSpaceItem.querySelector('.dropdown');
+
+  // Show the dropdown when hovering over the 'Book space' list item
+  bookSpaceItem.addEventListener('mouseover', () => {
+    dropdown.style.display = 'block'; // Display the dropdown
+  });
+
+  // Hide the dropdown when the mouse leaves the 'Book space' list item
+  bookSpaceItem.addEventListener('mouseout', () => {
+    dropdown.style.display = 'none'; // Hide the dropdown
+  });
+
+  // Prevent hiding the dropdown if mouse is over the dropdown itself
+  dropdown.addEventListener('mouseover', () => {
+    dropdown.style.display = 'block'; // Keep dropdown open when hovering over it
+  });
+
+  // Hide the dropdown when the mouse leaves the dropdown
+  dropdown.addEventListener('mouseout', () => {
+    dropdown.style.display = 'none'; // Hide dropdown if mouse leaves it
+  });
+</script>
+
+{% endblock script %}

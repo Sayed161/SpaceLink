@@ -1,0 +1,228 @@
+{% extends "home.html" %}
+
+{% block style %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock style %}
+
+{% block content %}
+<header>
+  <nav>
+    <ul class="navbar" style="display: flex; justify-content: center; align-items: center; background-color: transparent; list-style: none; margin: 0; padding: 10px 20px;">
+      <li style="margin: 0 15px;">
+        <a href="{% url 'index' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Home</a>
+      </li>
+      <li style="margin: 0 15px; position: relative;">
+        <a href="#" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Book space</a>
+        <ul class="dropdown" style="position: absolute; top: 100%; left: 0; background-color: white; border: 1px solid #ccc; display: none; list-style: none; padding: 0; margin: 0; min-width: 180px;">
+          <li><a href="{% url 'desk' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Desk</a></li>
+          <li><a href="{% url 'office' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book an Office</a></li>
+          <li><a href="{% url 'room' %}" style="display: block; padding: 10px; color: black; text-decoration: none; transition: background-color 0.3s;">Book a Room</a></li>
+        </ul>
+      </li>
+      <li style="margin: 0 15px;">
+        <a href="{% url 'list' %}" style="cursor: pointer; color: black; text-decoration: none; font-weight: 500; padding: 8px 16px; transition: color 0.3s, transform 0.3s;">Your bookings</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<section class="booking-section">
+  <style>
+    .booking-section {
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+
+    p {
+      text-align: center;
+    }
+
+    .list ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px auto;
+    }
+
+    .list li {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 90%;
+    }
+
+    li:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      border-color: #aaa;
+    }
+
+    .list li img {
+      flex-shrink: 0;
+      width: 280px;
+      height: 180px;
+      border-radius: 5px;
+      object-fit: cover;
+    }
+
+    .list li .details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .list li .details span {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .list li .details span.type {
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    .list li .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .list li .actions a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: #fff;
+      background-color: #007BFF;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .list li .actions a:hover {
+      background-color: #0056b3;
+    }
+    .book-button a{
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      list-style-type: none;
+      text-decoration: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .book-button:hover {
+      background-color: #0056b3;
+    }
+    #booking-form {
+  margin: 20px 45px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 400px;
+}
+
+#booking-form .form-group {
+  margin-bottom: 15px;
+}
+
+#booking-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+#booking-form input[type="date"],
+#booking-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+#booking-form button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+#booking-form button:hover {
+  background-color: #0056b3;
+}
+  </style>
+
+  <h1>Book a Desk</h1>
+  <p>Book a desk for the day to use in the common area of any WeWork location.</p>
+
+  <form id="booking-form">
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input type="date" id="date" value="2024-12-10">
+    </div>
+    <div class="form-group">
+      <label for="city">City</label>
+      <select id="city" name="city">
+        {% for location in locations %}
+          <option value="{{ location.name }}" {% if location.name == location %}selected{% endif %}>{{ location.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div class="list-container">
+    <ul class="list">
+      {% for office in office %}
+      <li>
+        <img src="{{ office.image.url }}" alt="Office Image">
+        <div class="details">
+          <span class="type">Office Booking</span>
+          <span>Location: {{ office.company.Location }}</span>
+          <span>Company: {{ office.company.name }}</span>
+          <span>Time: {{ office.time }}</span>
+          <span>Price: ${{ office.cost }}</span>
+          <span>Capacity: {{ office.capacity }}</span>
+        </div>
+        <div class="book-button">
+          <a href="{% url 'book-office' office.pk %}">Book Desk</a>
+      </div>
+      </li>
+      {% empty %}
+      <p>No offices available at the moment.</p>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% endblock content %}
+{% block script %}
+<script>
+  const bookSpaceItem = document.querySelector('.navbar li:nth-child(2)');
+  const dropdown = bookSpaceItem.querySelector('.dropdown');
+
+  bookSpaceItem.addEventListener('mouseover', () => dropdown.style.display = 'block');
+  bookSpaceItem.addEventListener('mouseout', () => dropdown.style.display = 'none');
+  dropdown.addEventListener('mouseover', () => dropdown.style.display = 'block');
+  dropdown.addEventListener('mouseout', () => dropdown.style.display = 'none');
+</script>
+{% endblock script %}
